@@ -100,6 +100,19 @@ services:
     ports:
       - "3080:3080"
     restart: always
+
+  portainer:
+    build:
+      context: .
+      dockerfile: requirements/bonus/portainer/Dockerfile
+    container_name: portainer
+    ports :
+      - "9040:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file: .env
+    restart: unless-stopped
+
 volumes:
   wordpress_v:
     name: wordpress_v
@@ -107,8 +120,7 @@ volumes:
     driver_opts:
       o: bind
       type: 'none'
-      device: /Users/aelbrahm/Desktop/data/wordpress
-
+      device: /home/$USER/data/wordpress
 
   mariadb_v:
     name: mariadb_v
@@ -116,7 +128,7 @@ volumes:
     driver_opts:
       o: bind
       type: 'none'
-      device: /Users/aelbrahm/Desktop/data/mariadb
+      device: /home/$USER/data/mariadb
 
 networks:
   inception:

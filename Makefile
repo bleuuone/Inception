@@ -6,7 +6,7 @@
 #    By: aelbrahm <aelbrahm@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/29 09:22:56 by aelbrahm          #+#    #+#              #
-#    Updated: 2024/04/29 10:48:33 by aelbrahm         ###   ########.fr        #
+#    Updated: 2024/05/04 10:51:36 by aelbrahm         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,9 @@ P_NAME = inception
 COMPOSE_CMD = docker-compose
 COMPOSE_PATH = ./srcs/docker-compose.yaml
 RUN = bash
+HOST=/Users/aelbrahm/Desktop/data
+VM=/home/aelbrahm/data
+VOLUME_DIR_SCRIPT=srcs/requirements/wordpress/tools/mk_dir.sh
 #================================#
 #            RULES               #
 #================================#
@@ -36,8 +39,8 @@ all: VLM_DIR build
 
 VLM_DIR: 
 		printf "\033[32;1m Start building... \033[0m\n"
-		chmod +x mk_dir.sh
-		$(RUN) mk_dir.sh
+		chmod +x $(VOLUME_DIR_SCRIPT)
+		$(RUN) $(VOLUME_DIR_SCRIPT)
 
 
 build:
@@ -59,15 +62,15 @@ down: stop
 
 clean: down
 		docker system prune -a
-		rm -rf ~/Desktop/data/wordpress/*
-		rm -rf ~/Desktop/data/mariadb/*
+		rm -rf $(VM)/wordpress/*
+		rm -rf $(VM)/mariadb/*
 fclean: 
 	printf "\033[32;1mTotal clean of all configurations docker\033[0m\n"
 	$(COMPOSE_CMD) -f $(COMPOSE_PATH) --project-name $(P_NAME) down -v
 	docker system prune --all --force --volumes
 	docker network prune --force
 	docker volume prune --force
-	rm -rf ~/Desktop/data/wordpress/*
-	rm -rf ~/Desktop/data/mariadb/*
+	rm -rf $(VM)/wordpress/*
+	rm -rf $(VM)/mariadb/*
 
 .SILENT : VLM_DIR build clean fclean down
