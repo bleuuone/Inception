@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: requirements/nginx/Dockerfile
     container_name: nginx
+    image: nginx-mor
     depends_on:
       - wordpress
     ports:
@@ -21,6 +22,7 @@ services:
       context: .
       dockerfile: requirements/mariadb/Dockerfile
     container_name: mariadb
+    image: mariadb-mor
     env_file:
       - .env
     expose:
@@ -36,6 +38,7 @@ services:
       context: .
       dockerfile: requirements/wordpress/Dockerfile
     container_name: wordpress
+    image: wordpress-mor
     env_file:
       - .env
     depends_on:
