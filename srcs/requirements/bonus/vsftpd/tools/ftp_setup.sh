@@ -5,6 +5,7 @@ SSL_CERT="/etc/ssl/private/vsftpd.crt"
 SSL_CRT_KET="/etc/ssl/private/vsftpd.key"
 SCRIPT_FILE="/usr/local/bin/ftp_setup.sh"
 
+sleep 15
 service vsftpd start
 
 cat<<EOF > cr
@@ -18,14 +19,14 @@ EOF
 
 #SET UP FTP USER
 adduser --home /var/www/html $FTP_USR --disabled-password < cr
-# rm cr
+rm cr
 echo "${FTP_USR}:${FTP_PWD}" | /usr/sbin/chpasswd
 chown -R $FTP_USR:$FTP_USR /var/www/html
 echo $FTP_USR | tee -a /etc/vsftpd.userlist &> /dev/null
-adduser ${FTP_USR} root
+adduser ${FTP_USR} root > /tmp/tst
 
 #CREATE SSL CERTIFICATE FOR FTP
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $SSL_CRT_KET -out $SSL_CERT -subj "/C=XX/ST=Morocco/L=Khoribga/O=42/OU=1337/CN=localhost"
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $SSL_CRT_KET -out $SSL_CERT -subj "/C=XX/ST=Morocco/L=Khoribga/O=42/OU=1337/CN=aelbrahm.42.fr"
 
 #ADD&MODIFIE CUSTOM FTP CONFIGURATION
 sed -i "s|#chroot_local_user=YES|chroot_local_user=YES|g"  $FTP_CONFIG_FILE && \
@@ -58,3 +59,4 @@ rm $SCRIPT_FILE
 
 #LAUNCH FTP DAEMON
 /usr/sbin/vsftpd
+
